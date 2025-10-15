@@ -1,0 +1,135 @@
+nav {
+  height: 100px;
+  position: fixed;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+}
+.hamburger {
+  margin-top: 10px;
+  margin-right: 10px;
+  width: 3.5%;
+  height: 65px;
+  border-radius: 100px;
+  border: 1px solid black;
+  font-size: 30px;
+  cursor: pointer;
+}
+.first {
+  width: 50vw;
+  height: 100vh;
+  /* border: 1px solid red; */
+}
+.first > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.first > h1 {
+  position: absolute;
+  top: 7%;
+  left: 20%;
+  font-size: 200px;
+  font-weight: 1000;
+  color: #403632;
+}
+body {
+  color: var(--brown);
+  background: url(../img/bg-shadow.jpg) no-repeat right bottom / cover fixed;
+  text-align: center;
+  position: relative;
+}
+.sidebar {
+  width: 30%;
+  height: 100%;
+  background-color: #403632;
+  position: fixed;
+  right: 0px;
+  transform: translateX(100%);
+  z-index: 20;
+}
+.Xbutton {
+  border-radius: 100px;
+  background-color: transparent;
+  width: 9%;
+  height: 5%;
+  border: 1px solid skyblue;
+  font-size: 20px;
+  color: skyblue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: absolute;
+  right: 0px;
+}
+.sidebar__box {
+  padding-top: 10%;
+}
+.sidebarText {
+  font-size: 30px;
+  font-weight: 700;
+  color: skyblue;
+  margin-top: 10%;
+  opacity: 0;
+}
+@media screen and (max-width: 768px) {
+  .first {
+    width: 100vw;
+    height: 100vh;
+  }
+  .first > img {
+    object-fit: cover;
+  }
+  .first > h1 {
+    position: absolute;
+    top: 10%;
+    left: 15%;
+    font-size: 50px;
+    font-weight: 1000;
+    color: #403632;
+  }
+  nav {
+    height: 50px;
+    position: fixed;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+  }
+  .hamburger {
+    position: fixed;
+    margin-top: 25px;
+    margin-right: 10px;
+    width: 10%;
+    height: 5%;
+    border-radius: 100px;
+    border: 1px solid black;
+    font-size: 20px;
+    cursor: pointer;
+    background-color: transparent;
+  }
+  .sidebar {
+    width: 70%;
+    height: 100%;
+    background-color: #403632;
+    position: fixed;
+    right: 0px;
+    transform: translateX(100%);
+    z-index: 20;
+  }
+  .Xbutton {
+    width: 15%;
+    height: 5%;
+    right: 10px;
+  }
+  nav {
+    height: 100px;
+    position: fixed;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+  }
+}

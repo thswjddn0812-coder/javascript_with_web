@@ -1,0 +1,26 @@
+section {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.first {
+  border: 1px solid red;
+  width: 25%;
+  height: 30%;
+  background-color: red;
+  filter: blur(20px);
+}
+.second {
+  width: 25%;
+  height: 30%;
+  filter: blur(20px);
+  background-color: blue;
+}
+.Third {
+  width: 25%;
+  height: 30%;
+  filter: blur(20px);
+  background-color: green;
+}

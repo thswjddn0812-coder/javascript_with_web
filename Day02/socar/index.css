@@ -1,0 +1,12 @@
+article {
+  width: 50vw;
+  height: 30vh;
+}
+nav {
+  height: 30%;
+  width: 100%;
+}
+/* nav>ul{
+  display: flex;
+  flex-direction: row;
+} */

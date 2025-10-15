@@ -1,0 +1,114 @@
+header {
+  width: 100vw;
+  height: 80px;
+  position: fixed;
+  z-index: 2;
+}
+nav {
+  width: 100%;
+  height: 100%;
+  /* border:1px solid red; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  max-width: 1550px;
+  margin: 0px auto;
+  align-items: center;
+}
+nav > img {
+  width: 8%;
+  height: 80%;
+  /* border:1px solid red; */
+}
+nav > div {
+  font-size: 40px;
+  color: white;
+}
+nav > div:hover {
+  cursor: pointer;
+}
+.screen > i {
+  font-size: 50px;
+}
+.screen > i:hover {
+  cursor: pointer;
+}
+.screen {
+  width: 30vw;
+  height: 100vh;
+  background-color: #262f3c;
+  position: fixed;
+  right: 0;
+  transition: all 0.5s;
+  transform: translateX(30vw);
+  z-index: 3;
+}
+.screenShow {
+  transform: translateX(0vw);
+}
+.screen > i {
+  padding-left: 90%;
+}
+section {
+  width: 100vw;
+  height: 100vh;
+  background-color: #141a24;
+  /* border: 1px solid red; */
+}
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mainText {
+  color: white;
+  position: absolute;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 90px;
+  font-weight: 700;
+}
+.mainText_2 {
+  color: white;
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 40px;
+}
+.hero {
+  position: relative;
+}
+.subText_1 {
+  color: white;
+  /* border:1px solid red; */
+  font-size: 37px;
+  margin-bottom: 70px;
+  margin-left: 300px;
+}
+.second {
+  /* border: 5px solid red; */
+}
+.secondDiv {
+  max-width: 1200px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  margin: 0 auto;
+  /* border:1px solid red; */
+}
+.swiper {
+  width: 900px;
+  height: 500px;
+  border-radius: 20px;
+}
+.subImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

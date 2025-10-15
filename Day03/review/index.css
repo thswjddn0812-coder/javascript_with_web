@@ -1,0 +1,43 @@
+section {
+  width: 50vw;
+  height: 30vh;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+}
+header {
+  width: 100%;
+  height: 30%;
+}
+header > ul {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  border: 1px solid black;
+  /* justify-content: center; */
+  align-items: center;
+}
+ul > li {
+  font-size: 30px;
+}
+div {
+  width: 100%;
+  height: 70%;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+div > h1 {
+  font-size: 30px;
+  margin-top: 20px;
+}
+div > p {
+  font-size: 20px;
+}
+.hidden {
+  display: none;
+}
+ul > li {
+  cursor: pointer;
+}
