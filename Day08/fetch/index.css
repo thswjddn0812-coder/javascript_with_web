@@ -4,6 +4,7 @@
   border: 1px solid black;
   background-size: cover;
   position: relative;
+  transition: all 0.3s;
 }
 .row {
   display: flex;
