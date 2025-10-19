@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rhythm Click Game</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background-color: black;
+        color: white;
+        font-family: sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      #gameArea {
+        position: relative;
+        width: 50vw;
+        height: 50vh;
+        border: 3px solid cyan;
+        border-radius: 20px;
+        box-shadow: 0 0 20px cyan;
+        overflow: hidden;
+      }
+
+      .circle {
+        position: absolute;
+        border-radius: 50%;
+        background-color: rgba(0, 255, 255, 0.6);
+        cursor: pointer;
+      }
+
+      .border {
+        position: absolute;
+        border-radius: 50%;
+        border: 2px solid cyan;
+        transform: scale(2);
+        opacity: 0.7;
+      }
+
+      .feedback {
+        position: absolute;
+        color: yellow;
+        font-weight: bold;
+        text-shadow: 0 0 5px black;
+      }
+
+      #scoreBoard {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-size: 20px;
+      }
+
+      #timeBoard {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+      }
+
+      #startBtn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: cyan;
+        color: black;
+        padding: 15px 30px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 24px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="gameArea">
+      <div id="scoreBoard">Score: 0</div>
+      <div id="timeBoard">Time: 15s</div>
+      <div id="startBtn">START</div>
+    </div>
+
+    <script>
+      const gameArea = document.getElementById("gameArea");
+      const scoreBoard = document.getElementById("scoreBoard");
+      const timeBoard = document.getElementById("timeBoard");
+      const startBtn = document.getElementById("startBtn");
+
+      let score = 0;
+      let timeLeft = 15; // 제한 시간 (초)
+      let gameInterval;
+      let timerInterval;
+      let gameActive = false;
+
+      startBtn.addEventListener("click", startGame);
+
+      function startGame() {
+        if (gameActive) return;
+        gameActive = true;
+        score = 0;
+        timeLeft = 15;
+        updateScore();
+        updateTime();
+        startBtn.style.display = "none";
+
+        // 원 생성 주기
+        gameInterval = setInterval(spawnCircle, 700);
+
+        // 타이머
+        timerInterval = setInterval(() => {
+          timeLeft--;
+          updateTime();
+          if (timeLeft <= 0) {
+            endGame();
+          }
+        }, 1000);
+      }
+
+      function endGame() {
+        gameActive = false;
+        clearInterval(gameInterval);
+        clearInterval(timerInterval);
+        alert(`게임 종료! 점수: ${score}`);
+        startBtn.style.display = "block";
+      }
+
+      function updateScore() {
+        scoreBoard.textContent = `Score: ${score}`;
+        if (score < -500) {
+          endGame();
+        }
+      }
+
+      function updateTime() {
+        timeBoard.textContent = `Time: ${timeLeft}s`;
+      }
+
+      function spawnCircle() {
+        const circle = document.createElement("div");
+        const border = document.createElement("div");
+        const size = 50;
+
+        const rect = gameArea.getBoundingClientRect();
+        const x = Math.random() * (rect.width - size);
+        const y = Math.random() * (rect.height - size);
+
+        circle.classList.add("circle");
+        border.classList.add("border");
+
+        circle.style.width = `${size}px`;
+        circle.style.height = `${size}px`;
+        border.style.width = `${size}px`;
+        border.style.height = `${size}px`;
+
+        circle.style.left = border.style.left = `${x}px`;
+        circle.style.top = border.style.top = `${y}px`;
+
+        gameArea.appendChild(border);
+        gameArea.appendChild(circle);
+
+        let scale = 2;
+        const shrinkSpeed = 0.02;
+
+        const animation = setInterval(() => {
+          scale -= shrinkSpeed;
+          border.style.transform = `scale(${scale})`;
+          if (scale <= 1) {
+            clearInterval(animation);
+            gameArea.removeChild(border);
+            if (gameArea.contains(circle)) {
+              gameArea.removeChild(circle);
+              score -= 100;
+              updateScore();
+            }
+          }
+        }, 16);
+
+        circle.addEventListener("click", () => {
+          const diff = Math.abs(scale - 1);
+          let feedbackText = "";
+          if (diff < 0.2) {
+            feedbackText = "Perfect!";
+            score += 200;
+          } else if (diff < 0.4) {
+            feedbackText = "Good!";
+            score += 100;
+          } else {
+            feedbackText = "Miss!";
+            score -= 100;
+          }
+
+          showFeedback(feedbackText, x, y);
+          clearInterval(animation);
+          gameArea.removeChild(circle);
+          gameArea.removeChild(border);
+          updateScore();
+        });
+      }
+
+      function showFeedback(text, x, y) {
+        const feedback = document.createElement("div");
+        feedback.classList.add("feedback");
+        feedback.textContent = text;
+        feedback.style.left = `${x + 60}px`;
+        feedback.style.top = `${y}px`;
+        gameArea.appendChild(feedback);
+
+        setTimeout(() => {
+          feedback.remove();
+        }, 700);
+      }
+    </script>
+  </body>
+</html>
