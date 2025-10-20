@@ -17,12 +17,12 @@ let timeCount = 0;
 let timerInterval;
 let gameInterval;
 
-// 임시 인기차트
 const musicData = [
   {
     title: "whiplash",
     img: "https://kpop-center.com/wp-content/uploads/2024/09/aespa_main-2.png",
     url: "music/WhiplashMusic.mp3",
+    video: "video/위플래쉬",
   },
   {
     title: "Spicy",
@@ -70,6 +70,7 @@ difficultyBtns.forEach((btn) => {
     selectedDifficulty = btn.textContent;
     difficultyScreen.classList.remove("active");
     gameScreen.classList.add("active");
+    console.log(selectedDifficulty);
     startGame();
   });
 });
@@ -106,9 +107,14 @@ function startGame() {
         endGame();
       }
     }, 1000);
-
+    if (selectedDifficulty == "쉬움😃") {
+      gameInterval = setInterval(spawnCircle, 800);
+    } else if (selectedDifficulty == "중간🤔") {
+      gameInterval = setInterval(spawnCircle, 600);
+    } else if (selectedDifficulty == "어려움🥵") {
+      gameInterval = setInterval(spawnCircle, 400);
+    }
     // 게임 루프 시작
-    gameInterval = setInterval(spawnCircle, 700);
   });
 }
 
@@ -123,11 +129,20 @@ function spawnCircle() {
 
   // circle 스타일
   circle.style.width = circle.style.height = `${size}px`;
-  circle.style.backgroundColor = "blueviolet";
+  circle.style.background = `radial-gradient(circle at 30% 30%, #a29bfe, #6c5ce7)`;
+  circle.style.boxShadow =
+    "0 4px 15px rgba(108, 92, 231, 0.6), 0 0 10px rgba(255, 255, 255, 0.2)";
   circle.style.borderRadius = "50%";
   circle.style.position = "absolute";
   circle.style.left = `${x}px`;
   circle.style.top = `${y}px`;
+  circle.style.transition = "transform 0.3s ease-in-out";
+  circle.addEventListener("mouseenter", () => {
+    circle.style.transform = "scale(1.2) rotate(10deg)";
+  });
+  circle.addEventListener("mouseleave", () => {
+    circle.style.transform = "scale(1) rotate(0deg)";
+  });
 
   // border 스타일
   border.style.width = border.style.height = `${size}px`;
@@ -174,23 +189,48 @@ function spawnCircle() {
     scoreBoard.innerText = `Score: ${score}`;
 
     // 판정 텍스트 표시
-    const judgement = document.createElement("div");
-    judgement.innerText = resultText;
-    judgement.style.position = "absolute";
-    judgement.style.left = `${x + 60}px`;
-    judgement.style.top = `${y}px`;
-    judgement.style.color =
-      resultText === "Perfect"
-        ? "gold"
-        : resultText === "Good"
-        ? "lightgreen"
-        : "red";
-    gameArea.appendChild(judgement);
-    setTimeout(() => judgement.remove(), 700);
+    const shapeDiv = document.createElement("div");
+    shapeDiv.style.position = "absolute";
+    shapeDiv.style.left = `${x}px`;
+    shapeDiv.style.top = `${y}px`;
+    shapeDiv.style.width = "50px";
+    shapeDiv.style.height = "50px";
+    shapeDiv.style.display = "flex";
+    shapeDiv.style.alignItems = "center";
+    shapeDiv.style.justifyContent = "center";
+    shapeDiv.style.color = "white";
+    shapeDiv.style.fontWeight = "bold";
+    shapeDiv.style.fontSize = "10px";
 
-    // 클릭 후 원과 테두리 제거
-    circle.remove();
-    border.remove();
+    // 모양과 색 지정
+    if (resultText === "Perfect") {
+      shapeDiv.style.backgroundColor = "gold";
+      shapeDiv.style.clipPath =
+        "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"; // 별
+    } else if (resultText === "Good") {
+      shapeDiv.style.backgroundColor = "lightgreen";
+      shapeDiv.style.borderRadius = "50%"; // 동그라미
+    } else {
+      shapeDiv.style.backgroundColor = "red";
+      shapeDiv.style.clipPath = "polygon(50% 0%, 0% 100%, 100% 100%)"; // 삼각형
+    }
+
+    // 살짝 확대 애니메이션
+    shapeDiv.style.transform = "scale(0)";
+    shapeDiv.style.transition =
+      "transform 0.3s ease-out, opacity 0.5s ease-out";
+    gameArea.appendChild(shapeDiv);
+
+    // 등장 애니메이션
+    requestAnimationFrame(() => {
+      shapeDiv.style.transform = "scale(1.2)";
+    });
+
+    // 사라지기
+    setTimeout(() => {
+      shapeDiv.style.opacity = 0;
+      setTimeout(() => shapeDiv.remove(), 300);
+    }, 700);
   });
 }
 
@@ -206,4 +246,50 @@ function backToMenu() {
   bgm.pause();
   gameScreen.classList.remove("active");
   mainMenu.classList.add("active");
+}
+function endGame() {
+  // 게임 루프와 타이머 정지
+  clearInterval(timerInterval);
+  clearInterval(gameInterval);
+  bgm.pause();
+
+  // 게임 화면 초기화
+  gameArea.innerHTML = "";
+
+  // 점수와 메시지 표시
+  const endDiv = document.createElement("div");
+  endDiv.style.position = "absolute";
+  endDiv.style.top = "50%";
+  endDiv.style.left = "50%";
+  endDiv.style.transform = "translate(-50%, -50%)";
+  endDiv.style.textAlign = "center";
+  endDiv.style.background = "rgba(0,0,0,0.7)";
+  endDiv.style.color = "white";
+  endDiv.style.padding = "30px 50px";
+  endDiv.style.borderRadius = "20px";
+  endDiv.style.fontSize = "24px";
+  endDiv.style.fontWeight = "bold";
+  endDiv.style.boxShadow = "0 0 20px rgba(255,255,255,0.5)";
+  endDiv.innerHTML = `
+    <div>고생하셨습니다!</div>
+    <div>최종 점수: ${score}</div>
+    <button id="restartBtn" style="
+      margin-top:20px;
+      padding:10px 20px;
+      font-size:16px;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+      background-color: #6c5ce7;
+      color:white;
+    ">메인으로 돌아가기</button>
+  `;
+  gameScreen.appendChild(endDiv);
+
+  // 버튼 클릭 시 메인 메뉴로
+  document.getElementById("restartBtn").addEventListener("click", () => {
+    endDiv.remove();
+    gameScreen.classList.remove("active");
+    mainMenu.classList.add("active");
+  });
 }
