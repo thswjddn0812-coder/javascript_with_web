@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>리듬 히어로</title>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        font-family: Arial;
+        background: #111;
+        color: #fff;
+      }
+      .screen {
+        display: none;
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+        overflow: hidden;
+      }
+      .active {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      #mainMenu {
+        background: linear-gradient(135deg, #1f1c2c, #928dab);
+      }
+      #mainMenu h1 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+      }
+      #startBtn {
+        padding: 15px 30px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        border: none;
+        border-radius: 10px;
+        background-color: #ff4c4c;
+        color: #fff;
+        transition: 0.3s;
+      }
+      #startBtn:hover {
+        transform: scale(1.05);
+        background-color: #ff6b6b;
+      }
+      #musicList {
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+        max-height: 400px;
+        overflow-y: auto;
+        margin-top: 20px;
+      }
+      .musicItem {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        margin-bottom: 10px;
+        background: #222;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .musicItem:hover {
+        background: #333;
+      }
+      .musicItem img {
+        width: 50px;
+        height: 50px;
+        border-radius: 5px;
+        margin-right: 10px;
+      }
+      .musicItem span {
+        font-size: 1rem;
+      }
+      #difficultySelect {
+        display: flex;
+        gap: 20px;
+        margin-top: 20px;
+      }
+      .difficultyBtn {
+        padding: 15px 25px;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        background-color: #4caf50;
+        color: #fff;
+        transition: 0.3s;
+      }
+      .difficultyBtn:hover {
+        transform: scale(1.05);
+        background-color: #66bb6a;
+      }
+      #gameScreen {
+        background-size: cover;
+        background-position: center;
+        position: relative;
+      }
+      #scoreBoard,
+      #timeBoard {
+        position: absolute;
+        top: 10px;
+        font-size: 1.2rem;
+        padding: 5px 10px;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 5px;
+      }
+      #scoreBoard {
+        left: 10px;
+      }
+      #timeBoard {
+        right: 10px;
+      }
+      #gameArea {
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+      .topBtn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        background-color: rgba(255, 255, 255, 0.2);
+        color: #fff;
+      }
+      .topBtn:hover {
+        background-color: rgba(255, 255, 255, 0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="mainMenu" class="screen active">
+      <h1>리듬 게임</h1>
+      <button id="startBtn">게임 시작</button>
+      <div id="musicList"></div>
+    </div>
+
+    <div id="difficultySelectScreen" class="screen">
+      <h2>난이도 선택</h2>
+      <div id="difficultySelect">
+        <button class="difficultyBtn">쉬움</button>
+        <button class="difficultyBtn">중간</button>
+        <button class="difficultyBtn">어려움</button>
+      </div>
+    </div>
+
+    <!-- 게임 화면 안에 배경 비디오 추가 -->
+    <div id="gameScreen" class="screen">
+      <video
+        id="bgVideo"
+        autoplay
+        muted
+        loop
+        style="
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          z-index: -1;
+        "
+      ></video>
+      <div id="scoreBoard">Score: 0</div>
+      <div id="timeBoard">Time: 0</div>
+      <button class="topBtn" id="exitBtn">메인 메뉴</button>
+      <div id="gameArea"></div>
+    </div>
+
+    <audio id="bgm" src="" preload="auto"></audio>
+
+    <script>
+      const mainMenu = document.getElementById("mainMenu");
+      const difficultyScreen = document.getElementById(
+        "difficultySelectScreen"
+      );
+      const gameScreen = document.getElementById("gameScreen");
+      const startBtn = document.getElementById("startBtn");
+      const musicList = document.getElementById("musicList");
+      const difficultyBtns = document.querySelectorAll(".difficultyBtn");
+      const gameArea = document.getElementById("gameArea");
+      const scoreBoard = document.getElementById("scoreBoard");
+      const timeBoard = document.getElementById("timeBoard");
+      const exitBtn = document.getElementById("exitBtn");
+      const bgm = document.getElementById("bgm");
+
+      let selectedMusic = null;
+      let selectedDifficulty = null;
+      let score = 0;
+      let timeCount = 0;
+      let timerInterval;
+      let gameInterval;
+
+      // 임시 인기차트
+      const musicData = [
+        {
+          title: "whiplash",
+          img: "https://kpop-center.com/wp-content/uploads/2024/09/aespa_main-2.png",
+          url: "music/WhiplashMusic.mp3",
+        },
+        {
+          title: "Spicy",
+          img: "https://m.media-amazon.com/images/M/MV5BYzZiNTQ0NjQtZGY1ZS00NTMzLWFjMTEtMjEwODQyYThiYTE1XkEyXkFqcGc@._V1_FMjpg_UY2560_.jpg",
+          url: "music/SpicyMusic.mp3",
+        },
+        {
+          title: "Next Level",
+          img: "https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2021/05/18/CY5aSs3PxF8f637569379930872110.JPG",
+          url: "music/Next LevelMusic.mp3",
+        },
+        {
+          title: "Black Mamba",
+          img: "https://cdn.i-scmp.com/sites/default/files/styles/1200x800/public/d8/images/methode/2020/11/17/cccb52da-28bb-11eb-bf26-f2b76f37a526_image_hires_181902.jpg?itok=Fx3MdCcb&v=1605608350",
+          url: "music/Black MambaMusic.mp3",
+        },
+        {
+          title: "Song E",
+          img: "https://www.rappler.com/tachyon/2021/12/aespa-Dreams-come-true-mv.jpg?resize=1698%2C954&zoom=1",
+          url: "music/Dreams Come TrueMusic.mp3",
+        },
+      ];
+
+      // 음악 리스트 생성
+      musicData.forEach((music, i) => {
+        const item = document.createElement("div");
+        item.className = "musicItem";
+        item.innerHTML = `<img src="${music.img}" alt=""><span>${music.title}</span>`;
+        item.addEventListener("click", () => {
+          selectedMusic = music;
+          mainMenu.classList.remove("active");
+          difficultyScreen.classList.add("active");
+        });
+        musicList.appendChild(item);
+      });
+
+      startBtn.addEventListener("click", () => {
+        // 그냥 메인 메뉴에서 선택 안하면 리스트 보여주기
+        musicList.scrollIntoView({ behavior: "smooth" });
+      });
+
+      // 난이도 선택
+      difficultyBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          selectedDifficulty = btn.textContent;
+          difficultyScreen.classList.remove("active");
+          gameScreen.classList.add("active");
+          startGame();
+        });
+      });
+
+      // 게임 시작
+      function startGame() {
+        gameArea.innerHTML = "";
+        score = 0;
+        timeCount = 30; // 예시: 30초
+        scoreBoard.innerText = `Score: ${score}`;
+        timeBoard.innerText = `Time: ${timeCount}`;
+
+        // 배경
+        gameScreen.style.backgroundImage = `url(${selectedMusic.img})`;
+        gameScreen.style.backgroundSize = "cover";
+        gameScreen.style.backgroundPosition = "center";
+
+        // 음악 시작
+        bgm.src = selectedMusic.url;
+        bgm.play();
+
+        timerInterval = setInterval(() => {
+          timeCount--;
+          timeBoard.innerText = `Time: ${timeCount}`;
+          if (timeCount <= 0) {
+            clearInterval(timerInterval);
+            clearInterval(gameInterval);
+            bgm.pause();
+            alert(`게임 종료! 점수: ${score}`);
+            backToMenu();
+          }
+        }, 1000);
+
+        gameInterval = setInterval(spawnCircle, 1000);
+      }
+
+      function spawnCircle() {
+        const circle = document.createElement("div");
+        const border = document.createElement("div");
+
+        const size = 50;
+        const rect = gameArea.getBoundingClientRect();
+        const x = Math.random() * (rect.width - size);
+        const y = Math.random() * (rect.height - size);
+
+        // circle 스타일
+        circle.style.width = circle.style.height = `${size}px`;
+        circle.style.backgroundColor = "blueviolet";
+        circle.style.borderRadius = "50%";
+        circle.style.position = "absolute";
+        circle.style.left = `${x}px`;
+        circle.style.top = `${y}px`;
+
+        // border 스타일
+        border.style.width = border.style.height = `${size}px`;
+        border.style.border = "2px solid red";
+        border.style.borderRadius = "50%";
+        border.style.position = "absolute";
+        border.style.left = `${x}px`;
+        border.style.top = `${y}px`;
+        border.style.transformOrigin = "center";
+
+        gameArea.appendChild(border);
+        gameArea.appendChild(circle);
+
+        let scale = 3;
+        const downSpeed = 0.02;
+
+        const animation = setInterval(() => {
+          scale -= downSpeed;
+          border.style.transform = `scale(${scale})`;
+          if (scale <= 1) {
+            clearInterval(animation);
+            if (circle.parentNode) circle.remove();
+            if (border.parentNode) border.remove();
+          }
+        }, 16); // 약 60fps
+        circle.addEventListener("click", () => {
+          if (!gameArea.contains(circle)) return;
+
+          let resultText = "";
+          let point = 0;
+
+          if (scale >= 1 && scale < 1.2) {
+            resultText = "Perfect";
+            point = 200;
+          } else if (scale >= 1.2 && scale < 1.5) {
+            resultText = "Good";
+            point = 100;
+          } else {
+            resultText = "Miss";
+            point = -50;
+          }
+
+          score += point;
+          scoreBoard.innerText = `Score: ${score}`;
+
+          // 판정 텍스트 표시
+          const judgement = document.createElement("div");
+          judgement.innerText = resultText;
+          judgement.style.position = "absolute";
+          judgement.style.left = `${x + 60}px`;
+          judgement.style.top = `${y}px`;
+          judgement.style.color =
+            resultText === "Perfect"
+              ? "gold"
+              : resultText === "Good"
+              ? "lightgreen"
+              : "red";
+          gameArea.appendChild(judgement);
+          setTimeout(() => judgement.remove(), 700);
+
+          // 클릭 후 원과 테두리 제거
+          circle.remove();
+          border.remove();
+        });
+      }
+
+      // ESC 또는 메뉴 버튼
+      exitBtn.addEventListener("click", backToMenu);
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") backToMenu();
+      });
+
+      function backToMenu() {
+        clearInterval(timerInterval);
+        clearInterval(gameInterval);
+        bgm.pause();
+        gameScreen.classList.remove("active");
+        mainMenu.classList.add("active");
+      }
+    </script>
+  </body>
+</html>

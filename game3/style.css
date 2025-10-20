@@ -1,0 +1,132 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial;
+  background: #111;
+  color: #fff;
+}
+.screen {
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#mainMenu {
+  background-image: url("img/9f5cc2e4-7400-4395-835b-11612af29f8e.png");
+  background-position: center;
+}
+#mainMenu h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+#startBtn {
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  background-color: #ff4c4c;
+  color: #fff;
+  transition: 0.3s;
+}
+#startBtn:hover {
+  transform: scale(1.05);
+  background-color: #ff6b6b;
+}
+#musicList {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  margin-top: 20px;
+}
+.musicItem {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #222;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.musicItem:hover {
+  background: #333;
+}
+.musicItem img {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+.musicItem span {
+  font-size: 1rem;
+}
+#difficultySelect {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+.difficultyBtn {
+  padding: 15px 25px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: #4caf50;
+  color: #fff;
+  transition: 0.3s;
+}
+.difficultyBtn:hover {
+  transform: scale(1.05);
+  background-color: #66bb6a;
+}
+#gameScreen {
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+#scoreBoard,
+#timeBoard {
+  position: absolute;
+  top: 10px;
+  font-size: 1.2rem;
+  padding: 5px 10px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+}
+#scoreBoard {
+  left: 10px;
+}
+#timeBoard {
+  right: 10px;
+}
+#gameArea {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.topBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+.topBtn:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}

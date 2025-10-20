@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>리듬 게임</title>
+    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="mainMenu" class="screen active">
+      <h1>리듬 게임</h1>
+      <button id="startBtn">게임 시작</button>
+      <div id="musicList"></div>
+    </div>
+
+    <div id="difficultySelectScreen" class="screen">
+      <h2>난이도 선택</h2>
+      <div id="difficultySelect">
+        <button class="difficultyBtn">쉬움😃</button>
+        <button class="difficultyBtn">중간🤔</button>
+        <button class="difficultyBtn">어려움🥵</button>
+      </div>
+    </div>
+
+    <div id="gameScreen" class="screen">
+      <video
+        id="bgVideo"
+        autoplay
+        muted
+        loop
+        style="
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          z-index: -1;
+        "
+      ></video>
+      <div id="scoreBoard">Score: 0</div>
+      <div id="timeBoard">Time: 0</div>
+      <button class="topBtn" id="exitBtn">메인 메뉴</button>
+      <div id="gameArea"></div>
+    </div>
+
+    <audio id="bgm" src="" preload="auto"></audio>
+  </body>
+</html>
